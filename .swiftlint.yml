@@ -1,0 +1,21 @@
+# MiniMosaic — pragmatic defaults for a small UIKit app
+disabled_rules:
+  - trailing_whitespace
+  - trailing_comma
+opt_in_rules:
+  - explicit_init
+  - overridden_super_call
+  - redundant_nil_coalescing
+line_length:
+  warning: 160
+  error: 220
+identifier_name:
+  min_length: 2
+type_name:
+  min_length: 3
+excluded:
+  - "**/NewsMiniAppPackage/**"
+  - "**/LocationMiniAppPackage/**"
+  - "**/.build/**"
+  - "**/CityViewController.swift"
+  - "**/WeatherViewController.swift"
