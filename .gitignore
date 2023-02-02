@@ -49,6 +49,13 @@ playground.xcworkspace
 
 Carthage/Build/
 
+# OS / editor
+.DS_Store
+*.xcuserstate
+
+# Xcode test bundles (local)
+*.xcresult
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo.
