@@ -2,13 +2,13 @@
 //  WeatherService.swift
 //  MiniMosaic
 //
-//  Created by Богдан Тарченко on 05.09.2024.
+//  Created by Anton Solovev on 18.01.2023.
 //
 
 import Alamofire
 import CoreLocation
 
-class WeatherService {
+final class WeatherService: WeatherProviding {
     private let apiKey = APIKeys.weatherAPIKey
     
     func fetchWeather(lat: CLLocationDegrees, lon: CLLocationDegrees, completion: @escaping (Result<WeatherModel, Error>) -> Void) {

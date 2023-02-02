@@ -2,10 +2,10 @@
 //  APIKeys.swift
 //  MiniMosaic
 //
-//  Created by Богдан Тарченко on 03.09.2024.
+//  Created by Anton Solovev on 18.01.2023.
 //
 
 enum APIKeys {
-    static let weatherAPIKey = "157a39d6104ab3ecd9e3649df3379e94"
-    static let newsAPIKey = "0aa0fc83d7234d02aeca03d82272fcc9"
+    static let weatherAPIKey = ""
+    static let newsAPIKey = ""
 }

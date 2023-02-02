@@ -2,19 +2,17 @@
 //  NewsService.swift
 //  MiniMosaic
 //
-//  Created by Богдан Тарченко on 07.09.2024.
+//  Created by Anton Solovev on 18.01.2023.
 //
 
 import Foundation
 import Alamofire
 
-class NewsService {
-    
-    static let shared = NewsService()
+final class NewsService: NewsProviding {
     private let apiKey = APIKeys.newsAPIKey
     private let baseURL = "https://newsapi.org/v2/top-headlines"
-    
-    private init() {}
+
+    init() {}
     
     func fetchTopHeadlines(completion: @escaping (Result<NewsResponse, Error>) -> Void) {
         let url = "\(baseURL)?country=us&apiKey=\(apiKey)"
