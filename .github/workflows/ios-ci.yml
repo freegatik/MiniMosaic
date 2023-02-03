@@ -1,0 +1,108 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  XCODE_PROJECT: MiniMosaic.xcodeproj
+  SCHEME: MiniMosaic
+  DESTINATION: platform=iOS Simulator,name=iPhone 15
+
+jobs:
+  swiftlint:
+    name: SwiftLint
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Lint
+        run: swiftlint lint --config .swiftlint.yml --strict --reporter github-actions-logging
+
+  unit-tests:
+    name: Build & unit tests
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache SPM + DerivedData
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            MiniMosaic.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/configuration
+          key: ${{ runner.os }}-xcode-spm-${{ hashFiles('MiniMosaic.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-spm-
+
+      - name: Resolve Swift packages
+        run: |
+          set -o pipefail
+          xcodebuild -project "$XCODE_PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" -resolvePackageDependencies
+
+      - name: Build and test (with coverage)
+        run: |
+          set -o pipefail
+          RESULT_BUNDLE="$RUNNER_TEMP/MiniMosaicTests.xcresult"
+          xcodebuild \
+            -project "$XCODE_PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DESTINATION" \
+            -resultBundlePath "$RESULT_BUNDLE" \
+            -enableCodeCoverage YES \
+            clean test \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Coverage summary → job summary
+        if: success()
+        run: |
+          RESULT_BUNDLE="$RUNNER_TEMP/MiniMosaicTests.xcresult"
+          echo "## Code coverage" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -d "$RESULT_BUNDLE" ]]; then
+            xcrun xccov view --report --only-targets "$RESULT_BUNDLE" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "(coverage report unavailable)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No result bundle at $RESULT_BUNDLE" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload xcresult (debug failures)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniMosaic-tests-xcresult
+          path: ${{ runner.temp }}/MiniMosaicTests.xcresult
+          retention-days: 14
+          if-no-files-found: ignore
+
+  gate:
+    name: CI green
+    runs-on: macos-14
+    needs: [swiftlint, unit-tests]
+    if: always()
+    steps:
+      - name: Require lint + tests
+        run: |
+          if [[ "${{ needs.swiftlint.result }}" != "success" ]]; then
+            echo "::error::SwiftLint job failed"
+            exit 1
+          fi
+          if [[ "${{ needs.unit-tests.result }}" != "success" ]]; then
+            echo "::error::Unit tests job failed"
+            exit 1
+          fi
+          echo "All required jobs passed."
