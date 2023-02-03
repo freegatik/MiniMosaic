@@ -2,6 +2,8 @@
 //  MiniMosaicModelTests.swift
 //  MiniMosaicTests
 //
+//  Created by Anton Solovev on 03.02.2023.
+//
 
 import XCTest
 @testable import MiniMosaic
@@ -41,5 +43,31 @@ final class LocationModelTests: XCTestCase {
         let model = LocationModel(city: "Kyiv", coordinates: "Широта: 1.00, Долгота: 2.00")
         XCTAssertEqual(model.city, "Kyiv")
         XCTAssertEqual(model.coordinates, "Широта: 1.00, Долгота: 2.00")
+    }
+}
+
+final class MiniAppListViewModelTests: XCTestCase {
+    func testCompactLayoutDisablesInteractionAndUsesOneEighthHeight() {
+        XCTAssertEqual(MiniAppGridLayoutMode.compactRows.cellHeightFactor, 1.0 / 8.0, accuracy: 0.000_001)
+        XCTAssertFalse(MiniAppGridLayoutMode.compactRows.interactionEnabled)
+    }
+
+    func testHalfLayoutEnablesInteraction() {
+        XCTAssertEqual(MiniAppGridLayoutMode.halfRows.cellHeightFactor, 0.5, accuracy: 0.000_001)
+        XCTAssertTrue(MiniAppGridLayoutMode.halfRows.interactionEnabled)
+    }
+
+    func testLoadMiniAppsUsesDefaultCount() {
+        let vm = MiniAppListViewModel(factory: MiniAppFactory(environment: .live))
+        vm.loadMiniApps()
+        XCTAssertEqual(vm.miniApps.count, 14)
+    }
+
+    func testSetLayoutModeUpdatesState() {
+        let vm = MiniAppListViewModel(factory: MiniAppFactory(environment: .live))
+        vm.setLayoutMode(.fullRows)
+        XCTAssertEqual(vm.layoutMode, .fullRows)
+        XCTAssertEqual(vm.cellHeightFactor, 1.0)
+        XCTAssertTrue(vm.interactionEnabled)
     }
 }
