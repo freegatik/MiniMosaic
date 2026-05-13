@@ -77,3 +77,7 @@ xcrun xccov view --report /tmp/MiniMosaic.xcresult | head -40
 ```
 
 Lint: `swiftlint lint --config .swiftlint.yml --strict` (see [`.swiftlint.yml`](.swiftlint.yml)).
+
+## License
+
+Licensed under the [MIT License](LICENSE). See `LICENSE` for the full wording.
