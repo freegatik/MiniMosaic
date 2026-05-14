@@ -8,15 +8,13 @@
 ![Static Badge](https://img.shields.io/badge/latest_release-v1.0.0-green)
 ![Static Badge](https://img.shields.io/badge/swift-v5.0-orange)
 
-[![iOS CI](https://github.com/freegatik/LiteApps-main/actions/workflows/ios-ci.yml/badge.svg)](https://github.com/freegatik/LiteApps-main/actions/workflows/ios-ci.yml)
+[![iOS CI](https://github.com/freegatik/MiniMosaic/actions/workflows/ios-ci.yml/badge.svg)](https://github.com/freegatik/MiniMosaic/actions/workflows/ios-ci.yml)
 
 iOS app built with **UIKit** (Swift **5**, iOS **16.0** minimum). A **mosaic home screen** of mini-app tiles (weather, news, location, and more) backed by **`MiniAppFactory`**, **`MiniAppListViewModel`**, and **`AppEnvironment`**. Layout modes scale tile height (**full**, **half**, **compact**); **tap-to-highlight** is enabled for **half** and **full** rows and disabled in **compact** (1/8 height) so tiny tiles stay non-interactive. Networking uses **Alamofire** (SPM); local Swift packages **`NewsMiniAppPackage`** and **`LocationMiniAppPackage`** live under `MiniMosaic/`. Copy and strings: **`Localizable.xcstrings`** (en, ru). Deeper structure: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-> **Badges:** URLs use **`freegatik/LiteApps-main`** (this repo’s `origin`). After renaming the repo or forking, switch badge and clone URLs to your `owner/repo`.
-
 ## CI
 
-Workflow [`.github/workflows/ios-ci.yml`](.github/workflows/ios-ci.yml) on [GitHub Actions](https://github.com/freegatik/LiteApps-main/actions) (triggers on **`push`** / **`pull_request`** to **`main`** or **`master`**, plus **`workflow_dispatch`**). **`concurrency`** with **`cancel-in-progress`** cancels superseded runs for the same ref/PR.
+Workflow [`.github/workflows/ios-ci.yml`](.github/workflows/ios-ci.yml) on [GitHub Actions](https://github.com/freegatik/MiniMosaic/actions) (triggers on **`push`** / **`pull_request`** to **`main`** or **`master`**, plus **`workflow_dispatch`**). **`concurrency`** with **`cancel-in-progress`** cancels superseded runs for the same ref/PR.
 
 | Job | What it runs |
 |-----|----------------|
@@ -39,8 +37,8 @@ After a successful test run, **`xcrun xccov report`** output (first lines) is ap
 ## Getting started
 
 ```bash
-git clone https://github.com/freegatik/LiteApps-main.git
-cd LiteApps-main
+git clone https://github.com/freegatik/MiniMosaic.git
+cd MiniMosaic
 open MiniMosaic.xcodeproj
 ```
 
